@@ -1,6 +1,8 @@
 
 #include "typegrind/buffered_binary/log_entry.h"
 
+#include <chrono>
+
 namespace typegrind
 {
     namespace buffered_binary
@@ -12,7 +14,7 @@ namespace typegrind
 
         log_entry::log_entry(typegrind::logger::entry_alloc const& info)
                 : entryType(info.entryType)
-                , timestamp(0) // TODO
+                , timestamp(std::chrono::high_resolution_clock::now().time_since_epoch().count())
                 , typeStr_targetName(reinterpret_cast<uint64_t>(info.typeStr))
                 , canonicalTypeStr_customName(reinterpret_cast<uint64_t>(info.canonicalTypeStr))
                 , locationStr(reinterpret_cast<uint64_t>(info.locationStr))
@@ -26,7 +28,7 @@ namespace typegrind
 
         log_entry::log_entry(typegrind::logger::entry_free const& info)
                 : entryType(info.entryType)
-                , timestamp(0) // TODO
+                , timestamp(std::chrono::high_resolution_clock::now().time_since_epoch().count())
                 , typeStr_targetName(reinterpret_cast<uint64_t>(info.typeStr))
                 , canonicalTypeStr_customName(reinterpret_cast<uint64_t>(info.canonicalTypeStr))
                 , locationStr(reinterpret_cast<uint64_t>(info.locationStr))
