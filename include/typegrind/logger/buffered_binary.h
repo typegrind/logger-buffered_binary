@@ -23,6 +23,8 @@
 
 #define TYPEGRIND_TYPE(...) __VA_ARGS__
 
+#define TYPEGRIND_RECORD_APPEND(loc) template<typename TYPEGRIND_PARAM> friend struct ::typegrind_logger_canonical_type; template<typename TYPEGRIND_PARAM1, int TYPEGRIND_PARAM2> friend struct ::typegrind_logger_specific_type;  
+
 template<typename T>
 struct typegrind_logger_canonical_type
 {
