@@ -14,28 +14,30 @@
 #define TYPEGRIND_LOG_FUNCTION_ENTER(locationStr, targetName, customName, flags) static typegrind::logger::method_scope typegrind_scope(targetName, locationStr, customName, flags); typegrind::logger::method_scope_guard typegrind_scope_guard(typegrind_scope);
 #define TYPEGRIND_LOG_FUNCTION_AUTO_ENTER(locationStr, targetName) /* nop */
 
-#define TYPEGRIND_CANONICAL_TYPE(typeName) (typegrind_logger_canonical_type< typeName >::name)
-#define TYPEGRIND_SPECIFIC_TYPE(typeName, idx) (typegrind_logger_specific_type< typeName, idx >::name)
+#define TYPEGRIND_CANONICAL_TYPE(typeName) (::typegrind_static_type_info::typegrind_logger_canonical_type< typeName >::name)
+#define TYPEGRIND_SPECIFIC_TYPE(typeName, idx) (::typegrind_static_type_info::typegrind_logger_specific_type< typeName, idx >::name)
 
 #define TYPEGRIND_STRINGIFY(P) #P
-#define TYPEGRIND_CANONICAL_SPECIALIZATION(typeName) template<> const char* typegrind_logger_canonical_type< typeName >::name = TYPEGRIND_STRINGIFY(typeName)
-#define TYPEGRIND_SPECIFIC_SPECIALIZATION(typeName, idx) template<> const char* typegrind_logger_specific_type< typeName, idx >::name = TYPEGRIND_STRINGIFY(typeName)
+#define TYPEGRIND_CANONICAL_SPECIALIZATION(typeName) template<> const char* typegrind_static_type_info::typegrind_logger_canonical_type< typeName >::name = TYPEGRIND_STRINGIFY(typeName)
+#define TYPEGRIND_SPECIFIC_SPECIALIZATION(typeName, specName, idx) template<> const char* typegrind_static_type_info::typegrind_logger_specific_type< typeName, idx >::name = TYPEGRIND_STRINGIFY(specName)
 
 #define TYPEGRIND_TYPE(...) __VA_ARGS__
 
-#define TYPEGRIND_RECORD_APPEND(loc) template<typename TYPEGRIND_PARAM> friend struct ::typegrind_logger_canonical_type; template<typename TYPEGRIND_PARAM1, int TYPEGRIND_PARAM2> friend struct ::typegrind_logger_specific_type;  
-#define TYPEGRIND_RECORD_APPEND_C(loc) /* nop */
+#define TYPEGRIND_RECORD_APPEND(loc) friend struct ::typegrind_static_type_info;
+#define TYPEGRIND_RECORD_APPEND_C(loc) friend struct ::typegrind_static_type_info;
 
-template<typename T>
-struct typegrind_logger_canonical_type
-{
-    static const char* name;
-};
+struct typegrind_static_type_info { 
+    template<typename T>
+    struct typegrind_logger_canonical_type
+    {
+        static const char* name;
+    };
 
-template<typename T, int N>
-struct typegrind_logger_specific_type
-{
-    static const char* name;
+    template<typename T, int N>
+    struct typegrind_logger_specific_type
+    {
+        static const char* name;
+    };
 };
 
 namespace typegrind
