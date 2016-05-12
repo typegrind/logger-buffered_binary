@@ -1,10 +1,13 @@
 #ifndef TYPEGRIND_BUFFERED_BINARY_H_H
 #define TYPEGRIND_BUFFERED_BINARY_H_H
 
-#define TYPEGRIND_LOG_NEW(locationStr, typeStr, canonicalTypeStr, typeSize, newExpression) (typegrind::logger::entry_alloc(typegrind::logger::NEW, typeStr, canonicalTypeStr, locationStr, static_cast<unsigned int>(typeSize)) * newExpression)
-#define TYPEGRIND_LOG_NEW_ARRAY(locationStr, typeStr, canonicalTypeStr, typeSize, size, newExpression) (typegrind::logger::entry_alloc(typegrind::logger::NEW_ARR, typeStr, canonicalTypeStr, locationStr, static_cast<unsigned int>(size) * typeSize) * newExpression)
-#define TYPEGRIND_LOG_OP_NEW(locationStr, typeStr, canonicalTypeStr, typeSize, size, newExpression) (typegrind::logger::entry_alloc(typegrind::logger::OP_NEW, typeStr, canonicalTypeStr, locationStr, static_cast<unsigned int>(size)) * newExpression)
-#define TYPEGRIND_LOG_OP_NEW_ARRAY(locationStr, typeStr, canonicalTypeStr, typeSize, size, newExpression) (typegrind::logger::entry_alloc(typegrind::logger::OP_NEW_ARR, typeStr, canonicalTypeStr, locationStr, static_cast<unsigned int>(size)) * newExpression)
+#define TYPEGRIND_EXPAND_DECLTYPE(locationStr, macroName, positionCode, expr, ...) macroName(locationStr, TYPEGRIND_TYPE(typegrind_static_type_info::typegrind_logger_canonical_type< decltype(expr) >), TYPEGRIND_TYPE(typegrind_static_type_info::typegrind_logger_specific_type< decltype(expr), positionCode>), ##__VA_ARGS__, expr)
+#define TYPEGRIND_EXPAND_DECLTYPE_SIZEOF(locationStr, macroName, positionCode, expr, ...) macroName(locationStr, TYPEGRIND_TYPE(typegrind_static_type_info::typegrind_logger_canonical_type< decltype(expr) >), TYPEGRIND_TYPE(typegrind_static_type_info::typegrind_logger_specific_type< decltype(expr), positionCode>), sizeof(decltype(expr)), ##__VA_ARGS__, expr)
+
+#define TYPEGRIND_LOG_NEW(locationStr, typeStr, canonicalTypeStr, newExpression, typeSize) (typegrind::logger::entry_alloc(typegrind::logger::NEW, typeStr, canonicalTypeStr, locationStr, static_cast<unsigned int>(typeSize)) * newExpression)
+#define TYPEGRIND_LOG_NEW_ARRAY(locationStr, typeStr, canonicalTypeStr, newExpression, typeSize, size) (typegrind::logger::entry_alloc(typegrind::logger::NEW_ARR, typeStr, canonicalTypeStr, locationStr, static_cast<unsigned int>(size) * typeSize) * newExpression)
+#define TYPEGRIND_LOG_OP_NEW(locationStr, typeStr, canonicalTypeStr, newExpression, typeSize, size) (typegrind::logger::entry_alloc(typegrind::logger::OP_NEW, typeStr, canonicalTypeStr, locationStr, static_cast<unsigned int>(size)) * newExpression)
+#define TYPEGRIND_LOG_OP_NEW_ARRAY(locationStr, typeStr, canonicalTypeStr, newExpression, typeSize, size) (typegrind::logger::entry_alloc(typegrind::logger::OP_NEW_ARR, typeStr, canonicalTypeStr, locationStr, static_cast<unsigned int>(size)) * newExpression)
 
 #define TYPEGRIND_LOG_DELETE(locationStr, typeStr, canonicalTypeStr, deleteExpression) (typegrind::logger::entry_free(typegrind::logger::DELETE, typeStr, canonicalTypeStr, locationStr) = deleteExpression)
 #define TYPEGRIND_LOG_DELETE_ARRAY(locationStr, typeStr, canonicalTypeStr, deleteExpression) (typegrind::logger::entry_free(typegrind::logger::DELETE_ARR, typeStr, canonicalTypeStr, locationStr) = deleteExpression)
@@ -17,7 +20,7 @@
 #define TYPEGRIND_CANONICAL_TYPE(typeName) (::typegrind_static_type_info::typegrind_logger_canonical_type< typeName >::name)
 #define TYPEGRIND_SPECIFIC_TYPE(typeName, idx) (::typegrind_static_type_info::typegrind_logger_specific_type< typeName, idx >::name)
 
-#define TYPEGRIND_STRINGIFY(P) #P
+#define TYPEGRIND_STRINGIFY(...) #__VA_ARGS__
 #define TYPEGRIND_CANONICAL_SPECIALIZATION(typeName) template<> const char* typegrind_static_type_info::typegrind_logger_canonical_type< typeName >::name = TYPEGRIND_STRINGIFY(typeName)
 #define TYPEGRIND_SPECIFIC_SPECIALIZATION(typeName, specName, idx) template<> const char* typegrind_static_type_info::typegrind_logger_specific_type< typeName, idx >::name = TYPEGRIND_STRINGIFY(specName)
 
