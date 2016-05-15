@@ -1,20 +1,8 @@
-#ifndef TYPEGRIND_BUFFERED_BINARY_H_H
-#define TYPEGRIND_BUFFERED_BINARY_H_H
+#ifndef TYPEGRIND_LOGGER_BUFFERED_BINARY_H_H
+#define TYPEGRIND_LOGGER_BUFFERED_BINARY_H_H
 
-#define TYPEGRIND_EXPAND_DECLTYPE(locationStr, macroName, positionCode, expr, ...)                 \
-  macroName(                                                                                       \
-      locationStr,                                                                                 \
-      TYPEGRIND_TYPE(typegrind_static_type_info::typegrind_logger_canonical_type<decltype(expr)>), \
-      TYPEGRIND_TYPE(typegrind_static_type_info::typegrind_logger_specific_type<decltype(expr),    \
-                                                                                positionCode>),    \
-      ##__VA_ARGS__, expr)
-#define TYPEGRIND_EXPAND_DECLTYPE_SIZEOF(locationStr, macroName, positionCode, expr, ...)          \
-  macroName(                                                                                       \
-      locationStr,                                                                                 \
-      TYPEGRIND_TYPE(typegrind_static_type_info::typegrind_logger_canonical_type<decltype(expr)>), \
-      TYPEGRIND_TYPE(typegrind_static_type_info::typegrind_logger_specific_type<decltype(expr),    \
-                                                                                positionCode>),    \
-      sizeof(decltype(expr)), ##__VA_ARGS__, expr)
+#include "typegrind/logger/common.h"
+#include "typegrind/logger/typeinfo.h"
 
 #define TYPEGRIND_LOG_NEW(locationStr, typeStr, canonicalTypeStr, newExpression, typeSize)        \
   (typegrind::logger::entry_alloc(typegrind::logger::NEW, typeStr, canonicalTypeStr, locationStr, \
@@ -55,37 +43,6 @@
   typegrind::logger::method_scope_guard typegrind_scope_guard(typegrind_scope);
 #define TYPEGRIND_LOG_FUNCTION_AUTO_ENTER(locationStr, targetName) /* nop */
 
-#define TYPEGRIND_CANONICAL_TYPE(typeName) \
-  (::typegrind_static_type_info::typegrind_logger_canonical_type<typeName>::name)
-#define TYPEGRIND_SPECIFIC_TYPE(typeName, idx) \
-  (::typegrind_static_type_info::typegrind_logger_specific_type<typeName, idx>::name)
-
-#define TYPEGRIND_STRINGIFY(...) #__VA_ARGS__
-#define TYPEGRIND_CANONICAL_SPECIALIZATION(typeName)                                        \
-  template <>                                                                               \
-  const char* typegrind_static_type_info::typegrind_logger_canonical_type<typeName>::name = \
-      TYPEGRIND_STRINGIFY(typeName)
-#define TYPEGRIND_SPECIFIC_SPECIALIZATION(typeName, specName, idx)                              \
-  template <>                                                                                   \
-  const char* typegrind_static_type_info::typegrind_logger_specific_type<typeName, idx>::name = \
-      TYPEGRIND_STRINGIFY(specName)
-
-#define TYPEGRIND_TYPE(...) __VA_ARGS__
-
-#define TYPEGRIND_RECORD_APPEND(loc) friend struct ::typegrind_static_type_info;
-#define TYPEGRIND_RECORD_APPEND_C(loc) friend struct ::typegrind_static_type_info;
-
-struct typegrind_static_type_info {
-  template <typename T>
-  struct typegrind_logger_canonical_type {
-    static const char* name;
-  };
-
-  template <typename T, int N>
-  struct typegrind_logger_specific_type {
-    static const char* name;
-  };
-};
 
 namespace typegrind {
 namespace logger {
@@ -199,4 +156,4 @@ struct method_scope_guard {
 }
 }
 
-#endif  // TYPEGRIND_BUFFERED_BINARY_H_H
+#endif  // TYPEGRIND_LOGGER_BUFFERED_BINARY_H_H
