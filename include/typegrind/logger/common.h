@@ -21,11 +21,10 @@
                                                                                 positionCode>),    \
       sizeof(decltype(expr)), ##__VA_ARGS__, expr)
 
-
 // stringifies every argument
 #define TYPEGRIND_STRINGIFY(...) #__VA_ARGS__
 
 // wrapper macro used by clang-typegrind to avoid comma problems in typenames
 #define TYPEGRIND_TYPE(...) __VA_ARGS__
 
-#endif //TYPEGRIND_LOGGER_COMMON_H_H
+#endif  // TYPEGRIND_LOGGER_COMMON_H_H

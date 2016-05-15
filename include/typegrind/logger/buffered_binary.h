@@ -43,7 +43,6 @@
   typegrind::logger::method_scope_guard typegrind_scope_guard(typegrind_scope);
 #define TYPEGRIND_LOG_FUNCTION_AUTO_ENTER(locationStr, targetName) /* nop */
 
-
 namespace typegrind {
 namespace logger {
 struct entry_alloc;
