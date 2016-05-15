@@ -12,22 +12,22 @@
 
 // canonical typename based on a static structure
 #define TYPEGRIND_CANONICAL_TYPE(typeName) \
-  (::typegrind_static_type_info::typegrind_logger_canonical_type<typeName>::name)
+  (::typegrind_static_type_info::canonical_type<typeName>::name)
 
 // specific (typedef) typename based on a static structure
 #define TYPEGRIND_SPECIFIC_TYPE(typeName, idx) \
-  (::typegrind_static_type_info::typegrind_logger_specific_type<typeName, idx>::name)
+  (::typegrind_static_type_info::specific_type<typeName, idx>::name)
 
 // adds a new canonical name to the static structure
 #define TYPEGRIND_CANONICAL_SPECIALIZATION(typeName)                                        \
   template <>                                                                               \
-  const char* typegrind_static_type_info::typegrind_logger_canonical_type<typeName>::name = \
+  const char* typegrind_static_type_info::canonical_type<typeName>::name = \
       TYPEGRIND_STRINGIFY(typeName)
 
 // adds a new specific name to the static structure
 #define TYPEGRIND_SPECIFIC_SPECIALIZATION(typeName, specName, idx)                              \
   template <>                                                                                   \
-  const char* typegrind_static_type_info::typegrind_logger_specific_type<typeName, idx>::name = \
+  const char* typegrind_static_type_info::specific_type<typeName, idx>::name = \
       TYPEGRIND_STRINGIFY(specName)
 
 // C++ structs/classes should be friends of our static structure
@@ -36,14 +36,15 @@
 // C structs/classes should be friends of our static structure
 #define TYPEGRIND_RECORD_APPEND_C(loc) friend struct ::typegrind_static_type_info;
 
+
 struct typegrind_static_type_info {
   template <typename T>
-  struct typegrind_logger_canonical_type {
+  struct canonical_type {
     static const char* name;
   };
 
   template <typename T, int N>
-  struct typegrind_logger_specific_type {
+  struct specific_type {
     static const char* name;
   };
 };
